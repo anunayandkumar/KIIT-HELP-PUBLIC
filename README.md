@@ -65,3 +65,6 @@ Contributions are welcome! Feel free to fork this repository, make changes, and 
 
 If you encounter any issues or have suggestions for improvements, please feel free to open an issue in the GitHub repository.
 
+## License 📝
+
+This project is licensed under the [MIT License](LICENSE).
