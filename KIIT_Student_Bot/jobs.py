@@ -1,46 +1,31 @@
+import os
 import requests
 
-
 def jobSearch(title):
-    url = "https://jobs-api14.p.rapidapi.com/list"
-
-    querystring = {"query": title, "location": "India",
-                   "remoteOnly": "false", "datePosted": "month",
-                   "employmentTypes": "fulltime;parttime;intern;contractor", "index": "0"}
+    url = "https://jobs-api14.p.rapidapi.com/v2/linkedin/search"
 
     headers = {
-        "X-RapidAPI-Key": "API KEY",
-        "X-RapidAPI-Host": "jobs-api14.p.rapidapi.com"
+        "x-rapidapi-key": "",
+        "x-rapidapi-host": "jobs-api14.p.rapidapi.com"
     }
 
-    response = requests.get(url, headers=headers, params=querystring)
+    params = {
+        "query": title,
+        "experienceLevels": "intern;entry;associate;midSenior;director",
+        "workplaceTypes": "remote;hybrid;onSite",
+        "location": "Worldwide",
+        "datePosted": "month",
+        "employmentTypes": "contractor;fulltime;parttime;intern;temporary"
+    }
+
+    response = requests.get(url, headers=headers, params=params, timeout=20)
+
+    print("STATUS:", response.status_code)
+    print("RAW:", response.text)   # keep this for debugging
+
+    if response.status_code != 200:
+        return []
 
     data = response.json()
-
-    array_of_jobs = []
-
-    count = 0
-    strID = ""
-    for job in data.get("jobs", []):
-        if count < 3:
-            countProvider = 0
-            strID = strID + "Title: " + job.get("title") + "\n"
-            strID = strID + "Company: " + job.get("company") + "\n"
-            strID = strID + "Location: " + job.get("location") + "\n"
-            strID = strID + "Date Posted: " + job.get("datePosted") + "\n\n"
-            for provider in job.get("jobProviders", []):
-                if countProvider < 2:
-                    strID = strID + "Provider: " + provider.get("jobProvider") + "\n"
-                    strID = strID + "URL: " + provider.get("url") + "\n\n"
-                    countProvider = countProvider + 1
-
-            array_of_jobs.append(strID)
-            strID = ""
-
-            count = count + 1
-
-    return array_of_jobs
-
-
-
+    return data.get("data", [])
 
